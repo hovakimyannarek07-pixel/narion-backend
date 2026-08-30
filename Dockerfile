@@ -17,4 +17,4 @@ RUN python manage.py collectstatic --noinput || true
 
 EXPOSE 8000
 
-CMD ["gunicorn", "narion_backend.wsgi", "--bind", "0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py migrate && gunicorn narion_backend.wsgi --bind 0.0.0.0:8000"]
