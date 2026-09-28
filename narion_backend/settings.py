@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from urllib.parse import unquote, urlparse
 
 import dj_database_url
 from dotenv import load_dotenv
@@ -88,8 +89,25 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
+
+# ---------- Cloudinary media storage ----------
+# Render stores the complete Cloudinary credential string in CLOUDINARY_URL:
+# cloudinary://<API_KEY>:<API_SECRET>@<CLOUD_NAME>
+CLOUDINARY_URL = os.getenv("CLOUDINARY_URL", "")
+if CLOUDINARY_URL:
+    cloudinary_parts = urlparse(CLOUDINARY_URL)
+    CLOUDINARY_STORAGE = {
+        "CLOUD_NAME": cloudinary_parts.hostname or "",
+        "API_KEY": unquote(cloudinary_parts.username or ""),
+        "API_SECRET": unquote(cloudinary_parts.password or ""),
+        "SECURE": True,
+    }
+    DEFAULT_STORAGE_BACKEND = "cloudinary_storage.storage.MediaCloudinaryStorage"
+else:
+    DEFAULT_STORAGE_BACKEND = "django.core.files.storage.FileSystemStorage"
+
 STORAGES = {
-    "default": {"BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"},
+    "default": {"BACKEND": DEFAULT_STORAGE_BACKEND},
     "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
 }
 
@@ -113,7 +131,5 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Backend API for the Narion real estate platform",
     "VERSION": "1.0.0",
 }
-
-
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
