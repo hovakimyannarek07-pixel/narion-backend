@@ -34,7 +34,7 @@ class District(models.Model):
 
     class Meta:
         ordering = ["name"]
-        unique_together = ("city", "name")
+        unique_together = ("region", "name") if False else ("city", "name")
 
     def __str__(self):
         return f"{self.name}, {self.city.name}"
@@ -226,7 +226,13 @@ class Favorite(models.Model):
 
 
 class Inquiry(models.Model):
-    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name="inquiries")
+    property = models.ForeignKey(
+        Property,
+        on_delete=models.CASCADE,
+        related_name="inquiries",
+        null=True,
+        blank=True,
+    )
     name = models.CharField(max_length=150)
     phone = models.CharField(max_length=40, blank=True)
     email = models.EmailField(blank=True)
@@ -239,4 +245,6 @@ class Inquiry(models.Model):
         verbose_name_plural = "Inquiries"
 
     def __str__(self):
-        return f"Inquiry from {self.name} about #{self.property_id}"
+        if self.property_id:
+            return f"Inquiry from {self.name} about #{self.property_id}"
+        return f"General inquiry from {self.name}"
