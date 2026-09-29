@@ -181,7 +181,9 @@ class Property(models.Model):
 
     @property
     def primary_image_url(self):
-        first = self.images.order_by("order").first()
+        first = self.images.filter(is_main=True).order_by("order", "id").first()
+        if not first:
+            first = self.images.order_by("order", "id").first()
         return first.image.url if first and first.image else None
 
 
