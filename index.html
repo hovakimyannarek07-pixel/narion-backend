@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Narion — verified real estate in Armenia</title>
-<meta name="description" content="Narion — real estate in Armenia with live listings, real photos, map search and viewing requests.">
+<title>Narion — Real Estate in Armenia</title>
+<meta name="description" content="Narion — modern real estate in Armenia with live listings, real photography, map search and private viewing requests.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Armenian:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@500;600;700;800&family=Noto+Sans+Armenian:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="/app.css">
 </head>
 <body>
-<header><div class="wrap nav">
-<a class="brand" href="#"><b>N</b>arion</a>
+<header id="siteHeader"><div class="wrap nav">
+<a class="brand" href="#home" aria-label="Narion home"><img class="brand-mark" src="/narion-mark.svg" alt=""><span class="brand-copy"><strong>Narion</strong><small>REAL ESTATE</small></span></a>
 <nav class="links"><a href="#listings" data-t="buy">Գնել</a><a href="#listings" data-rent-link data-t="rent">Վարձակալել</a><a href="#mapsec" data-t="map">Քարտեզ</a><a href="#why" data-t="why">Ինչու Narion</a></nav>
 <div class="spacer"></div>
 <div class="langs"><button data-lang="hy" class="active">ՀԱՅ</button><button data-lang="ru">RU</button><button data-lang="en">EN</button></div>
@@ -21,20 +21,35 @@
 <button class="btn ghost" id="loginBtn" data-t="login">Մուտք</button>
 <button class="btn green" id="listBtn" data-t="list">Հայտարարել գույք</button>
 </div></header>
+
 <main>
-<section class="hero"><div class="wrap hero-grid"><div>
-<span class="eyebrow"><span class="dot"></span><span data-t="eyebrow">Իրական տվյալներ · իրական գույքեր</span></span>
-<h1 data-t="heroTitle">Գտեք ճիշտ գույքը՝ առանց ավելորդ զանգերի</h1>
-<p data-t="heroSub">Narion-ը միավորում է վաճառքի և վարձակալության գույքերը մեկ պարզ հարթակում՝ իրական լուսանկարներով, մանրամասներով և դիտման հարցմամբ։</p>
-<div class="search"><input id="searchInput" data-ph="searchPh" placeholder="Թաղամաս, հասցե կամ գույքի անուն"><button class="btn green" id="searchBtn" data-t="search">Փնտրել</button></div>
+<section class="hero" id="home">
+<div class="hero-media" id="heroMedia"></div><div class="hero-overlay"></div>
+<div class="wrap hero-inner">
+<div class="hero-copy">
+<span class="eyebrow" data-t="eyebrow">NARION · REAL ESTATE ARMENIA</span>
+<h1 data-t="heroTitle">Բացահայտեք բացառիկ անշարժ գույք Հայաստանում</h1>
+<p data-t="heroSub">Ընտրված գույքեր, իրական տվյալներ և անհատական սպասարկում՝ Narion-ից։</p>
+<div class="hero-actions"><a class="btn light" href="#listings" data-t="explore">Դիտել գույքերը</a><button class="btn outline-light" id="heroSeller" data-t="list">Հայտարարել գույք</button></div>
+<div class="search"><input id="searchInput" data-ph="searchPh" placeholder="Թաղամաս, հասցե կամ գույքի անուն"><button class="btn search-btn" id="searchBtn" data-t="search">Փնտրել</button></div>
 <div class="quick"><button class="chip" data-q="Կենտրոն">Կենտրոն</button><button class="chip" data-q="Arabkir">Arabkir</button><button class="chip" data-q="apartment" data-t="apartments">Բնակարաններ</button></div>
-</div><aside class="proof"><strong data-t="proofTitle">Ավելի վստահ ընտրություն</strong><div class="proof-item"><span class="check">✓</span><span data-t="proof1">Քարտերում ցուցադրվում են տվյալները ուղիղ Narion-ի բազայից։</span></div><div class="proof-item"><span class="check">✓</span><span data-t="proof2">Օբյեկտը բացվում է ամբողջական նկարագրությամբ և պատկերասրահով։</span></div><div class="proof-item"><span class="check">✓</span><span data-t="proof3">Դիտման հարցումը ուղարկվում է անմիջապես Narion-ին։</span></div></aside></div></section>
-<section id="listings"><div class="wrap"><div class="head"><div><span class="kicker" data-t="catalog">Կատալոգ</span><h2 data-t="catalogTitle">Գույքեր Երևանում</h2></div><p data-t="catalogSub">Այստեղ չկան ցուցադրական կամ պատահական լուսանկարներ։ Ցուցադրվում են միայն Narion API-ից ստացված հրապարակված օբյեկտները։</p></div><div class="filters"><button class="filter active" data-filter="all" data-t="all">Բոլորը</button><button class="filter" data-filter="sale" data-t="buy">Գնել</button><button class="filter" data-filter="rent" data-t="rent">Վարձակալել</button><button class="filter" data-filter="primary" data-t="newbuild">Նորակառույց</button></div><div id="listingHost" class="loading-grid"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></div></section>
-<section class="trust" id="why"><div class="wrap"><div class="head"><div><span class="kicker" data-t="why">Ինչու Narion</span><h2 data-t="whyTitle">Կենտրոնացած է գործարքի վրա, ոչ թե աղմուկի</h2></div></div><div class="trust-grid"><div class="trust-box"><div class="ico">01</div><h3 data-t="trust1t">Մաքուր կատալոգ</h3><p data-t="trust1d">Գլխավոր էջը սպասում է իրական API-ին և այլևս չի ցույց տալիս պատահական demo-գույքեր։</p></div><div class="trust-box"><div class="ico">02</div><h3 data-t="trust2t">Ամբողջական քարտ</h3><p data-t="trust2d">Բացեք ցանկացած գույք՝ տեսնելու լուսանկարները, գինը, մակերեսը, սենյակները, հարկը և նկարագրությունը։</p></div><div class="trust-box"><div class="ico">03</div><h3 data-t="trust3t">Հաջորդ քայլը պարզ է</h3><p data-t="trust3d">Եթե գույքը հետաքրքրեց՝ ուղարկեք դիտման հարցում։ Narion-ը կստանա այն backend-ում։</p></div></div></div></section>
-<section id="mapsec"><div class="wrap"><div class="head"><div><span class="kicker" data-t="map">Քարտեզ</span><h2 data-t="mapTitle">Տեսեք գույքերը քարտեզի վրա</h2></div><p data-t="mapSub">Քարտեզի նշումները նույնպես գալիս են նույն Narion բազայից։</p></div><div id="map"></div></div></section>
-<section><div class="wrap"><div class="sell"><h2 data-t="sellTitle">Ունե՞ք գույք վաճառքի կամ վարձակալության համար</h2><p data-t="sellSub">Թողեք ձեր կոնտակտները և Narion-ը կստանա գույքի տեղադրման հարցումը անմիջապես backend-ում։</p><button class="btn" id="sellerCta" data-t="start">Սկսել</button></div></div></section>
+</div>
+<div class="hero-featured" id="heroFeatured" hidden><span class="hero-featured-label" data-t="featured">Ընտրված օբյեկտ</span><strong id="heroFeaturedTitle"></strong><span id="heroFeaturedPrice"></span></div>
+</div>
+<div class="hero-scroll"><span></span><small>SCROLL</small></div>
+</section>
+
+<section id="listings"><div class="wrap"><div class="head"><div><span class="kicker" data-t="catalog">Կատալոգ</span><h2 data-t="catalogTitle">Ընտրված գույքեր Երևանում</h2></div><p data-t="catalogSub">Միայն իրական հրապարակված օբյեկտներ Narion-ի բազայից՝ իրական լուսանկարներով և տվյալներով։</p></div><div class="filters"><button class="filter active" data-filter="all" data-t="all">Բոլորը</button><button class="filter" data-filter="sale" data-t="buy">Գնել</button><button class="filter" data-filter="rent" data-t="rent">Վարձակալել</button><button class="filter" data-filter="primary" data-t="newbuild">Նորակառույց</button></div><div id="listingHost" class="loading-grid"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></div></section>
+
+<section class="trust" id="why"><div class="wrap"><div class="head"><div><span class="kicker" data-t="why">Ինչու Narion</span><h2 data-t="whyTitle">Անշարժ գույք՝ առանց ավելորդ աղմուկի</h2></div></div><div class="trust-grid"><div class="trust-box"><div class="ico">01</div><h3 data-t="trust1t">Ընտրված առաջարկներ</h3><p data-t="trust1d">Կատալոգում ցուցադրվում են իրական հրապարակված օբյեկտներ և իրական լուսանկարներ։</p></div><div class="trust-box"><div class="ico">02</div><h3 data-t="trust2t">Լիարժեք ներկայացում</h3><p data-t="trust2d">Լուսանկարներ, գին, մակերես, սենյակներ, հարկ, նկարագրություն և քարտեզ՝ մեկ էջում։</p></div><div class="trust-box"><div class="ico">03</div><h3 data-t="trust3t">Անհատական կապ</h3><p data-t="trust3d">Ընտրեք գույքը և ուղարկեք դիտման հարցում անմիջապես Narion-ին։</p></div></div></div></section>
+
+<section id="mapsec"><div class="wrap"><div class="head"><div><span class="kicker" data-t="map">Քարտեզ</span><h2 data-t="mapTitle">Գույքերը քարտեզի վրա</h2></div><p data-t="mapSub">Յուրաքանչյուր նշում գալիս է Narion-ի նույն կենդանի բազայից։</p></div><div id="map"></div></div></section>
+
+<section class="sell-section"><div class="wrap"><div class="sell"><div class="sell-mark"><img src="/narion-mark.svg" alt=""></div><div><span class="kicker inverse">PRIVATE SERVICE</span><h2 data-t="sellTitle">Ունե՞ք գույք վաճառքի կամ վարձակալության համար</h2><p data-t="sellSub">Ներկայացրեք ձեր գույքը Narion-ում։ Մենք կստանանք ձեր տվյալները և կկապվենք հաջորդ քայլերի համար։</p><button class="btn light" id="sellerCta" data-t="start">Սկսել</button></div></div></div></section>
 </main>
-<footer><div class="wrap foot"><div><div class="brand"><b>N</b>arion</div><p data-t="footer">Անշարժ գույքի տեխնոլոգիական հարթակ Հայաստանի համար։</p></div><p>© 2026 Narion</p></div></footer>
+
+<footer><div class="wrap foot"><div class="footer-brand"><img src="/narion-mark.svg" alt=""><div><strong>Narion</strong><small>REAL ESTATE</small></div></div><p data-t="footer">Անշարժ գույքի ժամանակակից հարթակ Հայաստանի համար։</p><p>© 2026 Narion</p></div></footer>
+
 <div class="modal" id="detailModal"><div class="sheet"><button class="close" data-close="detailModal">×</button><div id="detailContent"></div></div></div>
 <div class="modal" id="authModal"><div class="sheet small"><button class="close" data-close="authModal">×</button><h2 style="margin-top:0" data-t="account">Narion հաշիվ</h2><div class="auth-tabs"><button id="tabLogin" class="active" data-t="login">Մուտք</button><button id="tabRegister" data-t="register">Գրանցվել</button></div><form id="authForm"><div class="field" id="nameField" style="display:none"><label data-t="name">Անուն</label><input id="authName"></div><div class="field"><label>Email</label><input id="authEmail" type="email" required></div><div class="field"><label data-t="password">Գաղտնաբառ</label><input id="authPassword" type="password" required minlength="8"></div><button class="btn green" style="width:100%" id="authSubmit" data-t="login">Մուտք</button><div class="form-msg" id="authMsg"></div></form></div></div>
 <div class="modal" id="sellerModal"><div class="sheet small"><button class="close" data-close="sellerModal">×</button><h2 style="margin-top:0" data-t="sellerTitle">Հայտարարել գույք</h2><p style="color:var(--muted);line-height:1.6" data-t="sellerText">Նշեք ձեր կոնտակտները և կարճ նկարագրեք գույքը։</p><form id="sellerForm"><div class="field"><label data-t="name">Անուն</label><input id="sellerName" required></div><div class="field"><label data-t="phone">Հեռախոս</label><input id="sellerPhone" required></div><div class="field"><label>Email</label><input id="sellerEmail" type="email"></div><div class="field"><label data-t="description">Նկարագրություն</label><textarea id="sellerMsg" required></textarea></div><button class="btn green" style="width:100%" data-t="send">Ուղարկել</button><div class="form-msg" id="sellerStatus"></div></form></div></div>
