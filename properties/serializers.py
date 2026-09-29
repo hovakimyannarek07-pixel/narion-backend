@@ -64,17 +64,21 @@ class PropertyListSerializer(serializers.ModelSerializer):
     title = serializers.CharField(read_only=True)
     primary_image = serializers.SerializerMethodField()
     district_name = serializers.CharField(source="district.name", read_only=True)
+    has_video = serializers.SerializerMethodField()
 
     class Meta:
         model = Property
         fields = [
             "id", "title", "primary_image", "district_name", "price", "currency",
             "area_sqm", "rooms", "bedrooms", "listing_type", "market_type",
-            "property_type", "is_featured",
+            "property_type", "is_featured", "has_video",
         ]
 
     def get_primary_image(self, obj):
         return obj.primary_image_url
+
+    def get_has_video(self, obj):
+        return bool(obj.videos.all())
 
 
 class PropertyDetailSerializer(serializers.ModelSerializer):
