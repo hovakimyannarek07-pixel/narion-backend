@@ -34,7 +34,7 @@ class District(models.Model):
 
     class Meta:
         ordering = ["name"]
-        unique_together = ("region", "name") if False else ("city", "name")
+        unique_together = ("city", "name")
 
     def __str__(self):
         return f"{self.name}, {self.city.name}"
