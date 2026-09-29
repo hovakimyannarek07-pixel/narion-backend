@@ -1,5 +1,11 @@
-from rest_framework import viewsets, permissions, generics
+from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, permissions, generics, status
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import (
     Region, City, District, Developer, Project, Agent,
@@ -12,6 +18,75 @@ from .serializers import (
     PropertyListSerializer, PropertyDetailSerializer, PropertyWriteSerializer,
     PropertyMapSerializer, FavoriteSerializer, InquirySerializer,
 )
+
+User = get_user_model()
+
+
+def _user_payload(user):
+    return {
+        "id": user.id,
+        "email": user.email or user.username,
+        "name": user.first_name or "",
+        "is_staff": user.is_staff,
+    }
+
+
+class RegisterView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        email = str(request.data.get("email", "")).strip().lower()
+        password = str(request.data.get("password", ""))
+        name = str(request.data.get("name", "")).strip()
+
+        if not email or "@" not in email:
+            return Response({"email": ["Enter a valid email address."]}, status=status.HTTP_400_BAD_REQUEST)
+        if not password:
+            return Response({"password": ["Password is required."]}, status=status.HTTP_400_BAD_REQUEST)
+        if User.objects.filter(username__iexact=email).exists():
+            return Response({"email": ["An account with this email already exists."]}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            validate_password(password)
+        except DjangoValidationError as exc:
+            return Response({"password": list(exc.messages)}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.create_user(
+            username=email,
+            email=email,
+            password=password,
+            first_name=name[:150],
+        )
+        token = Token.objects.create(user=user)
+        return Response({"token": token.key, "user": _user_payload(user)}, status=status.HTTP_201_CREATED)
+
+
+class LoginView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        email = str(request.data.get("email", "")).strip().lower()
+        password = str(request.data.get("password", ""))
+        user = authenticate(request, username=email, password=password)
+        if user is None:
+            return Response({"detail": "Invalid email or password."}, status=status.HTTP_400_BAD_REQUEST)
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({"token": token.key, "user": _user_payload(user)})
+
+
+class MeView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        return Response({"user": _user_payload(request.user)})
+
+
+class LogoutView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        Token.objects.filter(user=request.user).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RegionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -64,7 +139,6 @@ class PropertyViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        # Staff can see unpublished/draft properties too (for the admin dashboard)
         if self.request.user.is_staff:
             qs = Property.objects.all().select_related(
                 "district", "district__city", "developer", "project", "agent"
@@ -80,10 +154,6 @@ class PropertyViewSet(viewsets.ModelViewSet):
 
 
 class PropertyMapView(generics.ListAPIView):
-    """
-    GET /api/properties/map/?min_lat=&max_lat=&min_lng=&max_lng=&...filters
-    Lightweight payload for map markers — never returns full property objects.
-    """
     queryset = Property.objects.filter(is_published=True).select_related("district")
     serializer_class = PropertyMapSerializer
     filter_backends = [DjangoFilterBackend]
