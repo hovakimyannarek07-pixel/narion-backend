@@ -36,7 +36,7 @@
 <div class="wrap hero-grid">
 <div class="hero-copy reveal">
 <span class="eyebrow"><span class="dot"></span><span data-t="eyebrow">NARION · ԱՆՇԱՐԺ ԳՈՒՅՔ · ՀԱՅԱՍՏԱՆ</span></span>
-<h1 data-t="heroTitle">Գտեք ոչ թե պարզապես տուն, այլ ձեր տեղը Հայաստանում։</h1>
+<h1 data-t="heroTitle">Փնտրեք, գտեք և դարձրեք այն ձերը</h1>
 <p data-t="heroSub">Ընտրված գույքեր՝ իրական լուսանկարներով, հստակ տվյալներով և անհատական ուղեկցմամբ՝ առաջին դիտումից մինչև որոշում։</p>
 <div class="hero-actions"><a class="btn hero-primary" href="#listings" data-t="explore">Բացահայտել գույքերը</a><button class="btn hero-secondary" id="heroSeller" data-t="sellProperty">Վաճառել գույքը</button></div>
 <div class="search"><input id="searchInput" data-ph="searchPh" placeholder="Որտե՞ղ եք ցանկանում ապրել"><button class="btn" id="searchBtn" data-t="search">Փնտրել</button></div>
@@ -77,5 +77,6 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="/app.js"></script>
 <script src="/wow.js"></script>
+<script>(()=>{const text='Փնտրեք, գտեք և դարձրեք այն ձերը';const apply=()=>{const lang=document.querySelector('.langs button.active')?.dataset.lang||document.documentElement.lang||'hy';if(String(lang).toLowerCase().startsWith('hy')){const h=document.querySelector('[data-t="heroTitle"]');if(h)h.textContent=text}};apply();document.querySelectorAll('.langs button').forEach(b=>b.addEventListener('click',()=>setTimeout(apply,0)));})();</script>
 </body>
 </html>
