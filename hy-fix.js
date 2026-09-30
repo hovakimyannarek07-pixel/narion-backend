@@ -1,7 +1,7 @@
 (()=>{
 const HY={
   buy:'Գնել',rent:'Վարձակալել',approach:'Մեր մոտեցումը',map:'Քարտեզ',login:'Մուտք',list:'Վաճառել գույքը',
-  eyebrow:'NARION · ԱՆՇԱՐԺ ԳՈՒՅՔ ՀԱՅԱՍՏԱՆՈՒՄ',heroTitle:'Գտեք ձեր տունը Հայաստանում։',
+  eyebrow:'NARION · ԱՆՇԱՐԺ ԳՈՒՅՔ ՀԱՅԱՍՏԱՆՈՒՄ',heroTitle:'Փնտրեք, գտեք և դարձրեք այն ձերը',
   heroSub:'Ընտրված գույքեր, իրական լուսանկարներ և հստակ պայմաններ։ Narion-ը օգնում է ընտրել ու կազմակերպել դիտումը։',
   explore:'Դիտել գույքերը',sellProperty:'Վաճառել գույքը',search:'Փնտրել',searchPh:'Որտե՞ղ եք փնտրում գույք',apartments:'Բնակարաններ',
   privateService:'ԱՆՀԱՏԱԿԱՆ ՍՊԱՍԱՐԿՈՒՄ',proofTitle:'Ամեն ինչ՝ պարզ',proof1:'Իրական լուսանկարներ',proof2:'Գին և հիմնական տվյալներ',proof3:'Դիտման արագ հայտ',discover:'ՏԵՍՆԵԼ ԳՈՒՅՔԵՐԸ',
@@ -32,7 +32,8 @@ function patchCatalog(){if(!isHy())return;const q=s=>document.querySelector(s);s
   const count=document.getElementById('luxCount');if(count){const m=count.textContent.match(/\d+/);if(m)setText(count,`Գտնվել է ${m[0]} գույք`)}
   setText(q('.lux-resultbar small'),'USD / AMD · '+CAT.approx);document.querySelectorAll('.lux-viewing').forEach(b=>{const html=CAT.viewing+'<span>↗</span>';if(b.innerHTML!==html)b.innerHTML=html});document.querySelectorAll('.lux-fav').forEach(b=>b.setAttribute('aria-label','Պահպանել'));setText(q('.lux-empty p'),CAT.empty);
 }
-function apply(){patchGlobals();patchStatic();patchCatalog()}
+function patchBrand(){const mark=document.querySelector('.editorial-mark');if(!mark)return;mark.classList.remove('editorial-mark');mark.classList.add('editorial-brand-logo');mark.innerHTML='<img src="/narion-logo.png" alt="Narion Real Estate">';if(!document.getElementById('narionBrandPatch')){const s=document.createElement('style');s.id='narionBrandPatch';s.textContent='.editorial-brand-logo{display:flex;align-items:flex-start;justify-content:flex-start}.editorial-brand-logo img{display:block;width:190px;max-width:100%;height:auto;object-fit:contain;filter:none}@media(max-width:760px){.editorial-brand-logo img{width:160px}}';document.head.appendChild(s)}}
+function apply(){patchGlobals();patchStatic();patchCatalog();patchBrand()}
 setTimeout(apply,0);setTimeout(apply,120);
 document.querySelectorAll('.langs button').forEach(btn=>btn.addEventListener('click',()=>setTimeout(apply,30)));
 const target=document.getElementById('listings');if(target){let queued=false;new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;patchCatalog()})}).observe(target,{childList:true,subtree:true,characterData:true})}
