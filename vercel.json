@@ -5,11 +5,13 @@
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "app.css", "use": "@vercel/static" },
     { "src": "app.js", "use": "@vercel/static" },
+    { "src": "wow.js", "use": "@vercel/static" },
     { "src": "narion-logo.png", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/app.css", "dest": "/app.css", "headers": { "Cache-Control": "no-store, max-age=0" } },
     { "src": "/app.js", "dest": "/app.js", "headers": { "Cache-Control": "no-store, max-age=0" } },
+    { "src": "/wow.js", "dest": "/wow.js", "headers": { "Cache-Control": "no-store, max-age=0" } },
     { "src": "/narion-logo.png", "dest": "/narion-logo.png", "headers": { "Cache-Control": "public, max-age=86400" } },
     { "src": "/", "dest": "/index.html", "headers": { "Cache-Control": "no-store, max-age=0" } },
     { "src": "/.*", "dest": "/index.html", "headers": { "Cache-Control": "no-store, max-age=0" } }
