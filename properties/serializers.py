@@ -63,19 +63,33 @@ class PropertyListSerializer(serializers.ModelSerializer):
     """Used for catalog/list views — the property-card payload."""
     title = serializers.CharField(read_only=True)
     primary_image = serializers.SerializerMethodField()
+    preview_images = serializers.SerializerMethodField()
     district_name = serializers.CharField(source="district.name", read_only=True)
+    city_name = serializers.CharField(source="district.city.name", read_only=True)
+    project_name = serializers.CharField(source="project.name", read_only=True)
     has_video = serializers.SerializerMethodField()
 
     class Meta:
         model = Property
         fields = [
-            "id", "title", "primary_image", "district_name", "price", "currency",
-            "area_sqm", "rooms", "bedrooms", "listing_type", "market_type",
-            "property_type", "is_featured", "has_video",
+            "id", "title", "primary_image", "preview_images", "district_name", "city_name",
+            "address", "project_name", "price", "currency", "area_sqm", "rooms", "bedrooms",
+            "bathrooms", "listing_type", "market_type", "property_type", "is_featured", "has_video",
         ]
 
     def get_primary_image(self, obj):
         return obj.primary_image_url
+
+    def get_preview_images(self, obj):
+        request = self.context.get("request")
+        images = list(obj.images.order_by("order", "id")[:4])
+        urls = []
+        for image in images:
+            if not image.image:
+                continue
+            url = image.image.url
+            urls.append(request.build_absolute_uri(url) if request else url)
+        return urls
 
     def get_has_video(self, obj):
         return bool(obj.videos.all())
