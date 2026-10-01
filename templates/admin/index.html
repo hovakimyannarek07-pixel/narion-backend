@@ -1,0 +1,61 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="narion-dashboard">
+  <div class="narion-dashboard-head">
+    <div>
+      <div class="narion-dashboard-kicker">NARION OPERATIONS</div>
+      <h1>Управление объектами</h1>
+      <p>Добавляйте недвижимость, фото и видео, публикуйте её на сайте и обрабатывайте заявки.</p>
+    </div>
+    <a class="narion-primary-action" href="{% url 'admin:properties_property_add' %}">+ Добавить объект</a>
+  </div>
+
+  <div class="narion-card-grid">
+    <a class="narion-card narion-card-main" href="{% url 'admin:properties_property_changelist' %}">
+      <span class="narion-card-eyebrow">Каталог</span>
+      <strong>Объекты</strong>
+      <span>Фото, видео, цена, характеристики и публикация на Narion.am</span>
+      <b>Открыть →</b>
+    </a>
+
+    <a class="narion-card" href="{% url 'admin:properties_inquiry_changelist' %}">
+      <span class="narion-card-eyebrow">CRM</span>
+      <strong>Заявки</strong>
+      <span>Запросы клиентов на просмотр и консультацию</span>
+      <b>Открыть →</b>
+    </a>
+
+    <a class="narion-card" href="{% url 'admin:properties_project_changelist' %}">
+      <span class="narion-card-eyebrow">Новостройки</span>
+      <strong>Проекты</strong>
+      <span>Жилые комплексы, застройщики и сроки сдачи</span>
+      <b>Открыть →</b>
+    </a>
+
+    <a class="narion-card" href="{% url 'admin:properties_district_changelist' %}">
+      <span class="narion-card-eyebrow">География</span>
+      <strong>Локации</strong>
+      <span>Регионы, города и районы для фильтров и карты</span>
+      <b>Открыть →</b>
+    </a>
+
+    <a class="narion-card" href="{% url 'admin:properties_agent_changelist' %}">
+      <span class="narion-card-eyebrow">Команда</span>
+      <strong>Агенты</strong>
+      <span>Контакты и ответственные менеджеры по объектам</span>
+      <b>Открыть →</b>
+    </a>
+
+    <a class="narion-card" href="{% url 'admin:properties_developer_changelist' %}">
+      <span class="narion-card-eyebrow">Партнёры</span>
+      <strong>Застройщики</strong>
+      <span>Данные девелоперов и связанные проекты</span>
+      <b>Открыть →</b>
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}
