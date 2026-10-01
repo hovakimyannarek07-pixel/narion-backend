@@ -17,4 +17,4 @@ RUN python manage.py collectstatic --noinput || true
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "python manage.py migrate || echo 'WARNING: database unavailable; migrations skipped'; gunicorn narion_backend.wsgi --bind 0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py ensure_admin && gunicorn narion_backend.wsgi --bind 0.0.0.0:8000"]
