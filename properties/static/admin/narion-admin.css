@@ -1,0 +1,73 @@
+:root{
+  --primary:#111111;
+  --secondary:#1d1d1f;
+  --accent:#caa96a;
+  --header-bg:#0a0a0a;
+  --header-color:#ffffff;
+  --breadcrumbs-bg:#111111;
+  --breadcrumbs-fg:#cfcfd4;
+  --link-fg:#7b5b20;
+  --link-hover-color:#111111;
+  --button-bg:#111111;
+  --button-hover-bg:#2a2a2d;
+  --default-button-bg:#111111;
+  --default-button-hover-bg:#2a2a2d;
+  --body-bg:#f5f5f7;
+  --body-fg:#1d1d1f;
+  --hairline-color:#e5e5e7;
+  --border-color:#dddddf;
+  --darkened-bg:#f1f1f3;
+  --selected-bg:#f2eee5;
+}
+
+html,body{background:#f5f5f7}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#1d1d1f}
+#header{background:#090909;border-bottom:1px solid #242424;padding:0 28px;min-height:74px;display:flex;align-items:center}
+#branding{display:flex;align-items:center}
+.narion-brand{display:flex;align-items:center;gap:13px;color:white}
+.narion-brand-mark{width:38px;height:38px;border:1px solid #6f603f;border-radius:11px;display:grid;place-items:center;font:600 18px/1 Georgia,serif;color:#d5bd87;background:linear-gradient(145deg,#171717,#0b0b0b)}
+.narion-brand-name{font-size:18px;font-weight:650;letter-spacing:-.02em}
+.narion-brand-sub{font-size:8px;letter-spacing:.24em;color:#9b9ba1;margin-top:4px}
+#user-tools{font-size:12px}
+#user-tools a{color:#d5bd87}
+div.breadcrumbs{background:#151515;color:#9f9fa5;padding:13px 28px;border-bottom:1px solid #2b2b2b}
+div.breadcrumbs a{color:#fff}
+#content{padding:32px;max-width:1500px;margin:0 auto}
+#content h1{font-size:28px;letter-spacing:-.035em;font-weight:650;margin-bottom:22px}
+.module,.inline-group,.submit-row,.selector{border:1px solid #e2e2e5;border-radius:16px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.035);background:#fff}
+.module h2,.module caption,.inline-group h2{background:#111;color:#fff;padding:13px 16px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.form-row{padding:16px 18px;border-bottom:1px solid #ededf0}
+.form-row:last-child{border-bottom:none}
+fieldset.module{margin-bottom:18px}
+fieldset.module>h2{font-size:12px}
+fieldset .description{padding:12px 18px 0;color:#77777e;font-size:12px}
+input[type=text],input[type=password],input[type=email],input[type=url],input[type=number],textarea,select,.vTextField{border:1px solid #d8d8dc;border-radius:10px;padding:10px 12px;background:#fff;min-height:40px;box-sizing:border-box}
+textarea{min-height:120px}
+input:focus,textarea:focus,select:focus{border-color:#9a7a3c;box-shadow:0 0 0 3px rgba(154,122,60,.12);outline:none}
+.button,input[type=submit],input[type=button],.submit-row input,a.button{border-radius:10px;padding:10px 16px;border:0;box-shadow:none}
+.button.default,input[type=submit].default,.submit-row input.default{background:#111;color:white}
+.object-tools a{border-radius:999px;background:#111;padding:9px 14px}
+#changelist .actions{background:#fff;border-radius:14px 14px 0 0;padding:12px 14px;border-bottom:1px solid #ededf0}
+#changelist table{background:#fff}
+#changelist table thead th{background:#fafafa;color:#5f5f65;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+#changelist table tbody tr:hover{background:#fbfaf7}
+#changelist-filter{border:1px solid #e2e2e5;border-radius:16px;overflow:hidden;background:#fff}
+#changelist-filter h2{background:#111;color:#fff}
+#changelist-filter h3{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#777}
+.inline-group .tabular tr.has_original td{padding-top:14px}
+.inline-related h3{background:#fafafa;border-bottom:1px solid #ededf0}
+.submit-row{padding:15px 18px;position:sticky;bottom:10px;z-index:20}
+.messagelist li{border-radius:12px;margin-bottom:10px}
+.login #container{max-width:430px;margin-top:10vh;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.12);border:1px solid #e3e3e5}
+.login #header{justify-content:center}
+.login #content{padding:28px}
+
+@media(max-width:767px){
+  #header{padding:0 16px;min-height:66px}
+  .narion-brand-sub{display:none}
+  #content{padding:18px 12px}
+  div.breadcrumbs{padding:11px 14px}
+  #user-tools{display:none}
+  .aligned .form-row>div{display:block}
+  .submit-row{bottom:6px}
+}
