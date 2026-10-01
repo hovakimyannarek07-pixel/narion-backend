@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Narion Control{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/narion-admin.css' %}">
+{% endblock %}
+
+{% block branding %}
+<div class="narion-brand">
+  <div class="narion-brand-mark">N</div>
+  <div>
+    <div class="narion-brand-name">Narion Control</div>
+    <div class="narion-brand-sub">REAL ESTATE OPERATIONS</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
