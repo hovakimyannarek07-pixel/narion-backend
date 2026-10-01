@@ -49,7 +49,7 @@ ROOT_URLCONF = "narion_backend.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -93,8 +93,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 
 # ---------- Cloudinary media storage ----------
-# Render stores the complete Cloudinary credential string in CLOUDINARY_URL:
-# cloudinary://<API_KEY>:<API_SECRET>@<CLOUD_NAME>
 CLOUDINARY_URL = os.getenv("CLOUDINARY_URL", "")
 if CLOUDINARY_URL:
     cloudinary_parts = urlparse(CLOUDINARY_URL)
