@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from .views import (
+    PublicConfigView,
     RegisterView, LoginView, MeView, LogoutView,
     RegionViewSet, CityViewSet, DistrictViewSet,
     DeveloperViewSet, ProjectViewSet, AgentViewSet,
@@ -20,6 +21,7 @@ router.register("favorites", FavoriteViewSet, basename="favorite")
 router.register("inquiries", InquiryViewSet, basename="inquiry")
 
 urlpatterns = [
+    path("public-config/", PublicConfigView.as_view(), name="public-config"),
     path("auth/register/", RegisterView.as_view(), name="auth-register"),
     path("auth/login/", LoginView.as_view(), name="auth-login"),
     path("auth/me/", MeView.as_view(), name="auth-me"),
