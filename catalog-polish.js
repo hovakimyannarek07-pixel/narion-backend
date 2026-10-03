@@ -1,5 +1,5 @@
 (()=>{
-const WHATSAPP='';
+let publicConfig={whatsapp_number:'',yandex_maps_api_key:''};
 
 function cleanBrand(){
  document.querySelectorAll('.brand-word,.footer-brand-name,.sell-signature').forEach(el=>el.remove());
@@ -76,7 +76,8 @@ async function premiumOpenProperty(id){
   ].join('');
   const thumbHtml=imgs.slice(1,6).map((x,i)=>`<button class="np-thumb" data-img="${esc(x)}" aria-label="Image ${i+2}"><img src="${esc(x)}" alt=""></button>`).join('');
   const videoHtml=(p.videos||[]).map(v=>mediaUrl(v.video)).filter(Boolean).slice(0,2).map(src=>`<video class="np-video" controls playsinline preload="metadata" src="${esc(src)}"></video>`).join('');
-  const wa=WHATSAPP?`<a class="np-whatsapp" target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent(title)}">${esc(c.whatsapp)}</a>`:'';
+  const waNumber=publicConfig.whatsapp_number||'';
+  const wa=waNumber?`<a class="np-whatsapp" target="_blank" rel="noopener" href="https://wa.me/${waNumber}?text=${encodeURIComponent(title)}">${esc(c.whatsapp)}</a>`:'';
   host.innerHTML=`
    <article class="narion-property">
     <section class="np-gallery">
@@ -123,6 +124,55 @@ async function premiumOpenProperty(id){
 
 window.openProperty=premiumOpenProperty;
 
+function loadYandexScript(key){
+ return new Promise((resolve,reject)=>{
+  if(window.ymaps)return resolve();
+  const existing=document.querySelector('script[data-narion-yandex]');
+  if(existing){existing.addEventListener('load',resolve,{once:true});existing.addEventListener('error',reject,{once:true});return}
+  const s=document.createElement('script');
+  s.dataset.narionYandex='1';
+  s.src=`https://api-maps.yandex.ru/2.1/?apikey=${encodeURIComponent(key)}&lang=ru_RU`;
+  s.onload=resolve;s.onerror=reject;document.head.appendChild(s);
+ });
+}
+
+async function setupYandexMap(key){
+ if(!key||!document.getElementById('map'))return;
+ try{
+  await loadYandexScript(key);
+  await new Promise(resolve=>window.ymaps.ready(resolve));
+  try{if(map&&typeof map.remove==='function')map.remove()}catch{}
+  const host=document.getElementById('map');
+  host.innerHTML='';
+  const ymap=new ymaps.Map('map',{center:[40.1772,44.5035],zoom:12,type:'yandex#hybrid',controls:['zoomControl','geolocationControl']},{suppressMapOpenBlock:true});
+  window.narionYandexMap=ymap;
+  const response=await fetch(`${API}/api/properties/map/?_=${Date.now()}`,{cache:'no-store'});
+  const points=await response.json();
+  const svg=`data:image/svg+xml;charset=UTF-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" fill="#0b0b0c" stroke="#c5a56a" stroke-width="2"/><circle cx="14" cy="14" r="3.5" fill="#ffffff"/></svg>')}`;
+  (Array.isArray(points)?points:[]).forEach(p=>{
+   const lat=Number(p.latitude),lng=Number(p.longitude);
+   if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
+   const marker=new ymaps.Placemark([lat,lng],{
+    balloonContentHeader:esc(titleOf(p)),
+    balloonContentBody:`<div style="font:500 13px Inter,sans-serif"><b>${esc(money(p))}</b><br><button onclick="openProperty(${Number(p.id)})" style="margin-top:10px;border:0;border-radius:999px;padding:8px 12px;background:#0b0b0c;color:#fff;cursor:pointer">${esc(tr('view'))}</button></div>`,
+    hintContent:esc(titleOf(p))
+   },{iconLayout:'default#image',iconImageHref:svg,iconImageSize:[28,28],iconImageOffset:[-14,-14]});
+   ymap.geoObjects.add(marker);
+  });
+  const bounds=ymap.geoObjects.getBounds();
+  if(bounds)ymap.setBounds(bounds,{checkZoomRange:true,zoomMargin:70});
+ }catch(err){console.warn('Narion Yandex map unavailable',err)}
+}
+
+async function loadPublicConfig(){
+ try{
+  const r=await fetch(`${API}/api/public-config/?_=${Date.now()}`,{cache:'no-store'});
+  if(!r.ok)return;
+  publicConfig=Object.assign(publicConfig,await r.json());
+  if(publicConfig.yandex_maps_api_key)setupYandexMap(publicConfig.yandex_maps_api_key);
+ }catch{}
+}
+
 const style=document.createElement('style');
 style.textContent=`
 .editorial-mark,.brand-word,.footer-brand-name,.sell-signature{display:none!important}
@@ -150,11 +200,13 @@ style.textContent=`
 .np-shell{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:64px;padding:58px 64px 76px}
 .np-content{min-width:0}.np-eyebrow{font:600 10px Inter,sans-serif;letter-spacing:.22em;color:#95773f;margin-bottom:16px}.np-content>h1{font:600 clamp(38px,4.5vw,68px)/.98 "Space Grotesk",Inter,sans-serif;letter-spacing:-.055em;margin:0;max-width:900px}.np-location{font-size:15px;color:#707074;margin-top:18px}.np-price{font:600 clamp(28px,3vw,42px)/1 "Space Grotesk",Inter,sans-serif;margin-top:30px}.np-specs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:38px}.np-spec{background:#fff;border:1px solid #e1ded6;border-radius:14px;padding:16px;display:flex;gap:12px;align-items:center}.np-spec>span{font-size:18px;color:#99783a}.np-spec small{display:block;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:#8a8883}.np-spec b{display:block;margin-top:5px;font-size:15px}.np-section{padding-top:48px;margin-top:48px;border-top:1px solid #d9d5cc}.np-section h2{font:600 26px/1.1 "Space Grotesk",Inter,sans-serif;letter-spacing:-.035em;margin:0 0 22px}.np-description{font-size:17px;line-height:1.78;color:#49494d;white-space:pre-line;max-width:840px}.np-features{display:flex;flex-wrap:wrap;gap:9px}.np-feature{background:#0d0d0e;color:white;padding:10px 14px;border-radius:999px;font-size:12px}.np-video-section>div>span{font-size:9px;letter-spacing:.22em;color:#9d7e45}.np-video{width:100%;display:block;background:#050505;border-radius:18px;margin-top:16px;max-height:650px}.np-address-card{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid #e1ded6;padding:20px;border-radius:16px}.np-address-card>span{font-size:28px}.np-address-card b{display:block}.np-address-card small{display:block;margin-top:5px;color:#777}
 .np-contact{position:relative}.np-contact-inner{position:sticky;top:28px;background:#0b0b0c;color:#fff;border-radius:20px;padding:28px;box-shadow:0 24px 60px rgba(0,0,0,.12)}.np-contact-kicker{font-size:9px;letter-spacing:.2em;color:#c4a86f}.np-contact h3{font:600 27px/1.08 "Space Grotesk",Inter,sans-serif;margin:12px 0 0}.np-contact-price{font-size:20px;margin:14px 0 24px;color:#d2bd91}.np-contact .field{display:grid;gap:7px;margin-bottom:12px}.np-contact label{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#9b9b9f}.np-contact input,.np-contact textarea{width:100%;box-sizing:border-box;background:#171719;border:1px solid #2c2c2e;color:#fff;border-radius:11px;padding:12px 13px;outline:none}.np-contact textarea{min-height:92px;resize:vertical}.np-contact input:focus,.np-contact textarea:focus{border-color:#8d7444}.np-submit,.np-whatsapp{width:100%;box-sizing:border-box;min-height:48px;border-radius:999px;border:0;display:grid;place-items:center;font:600 13px Inter,sans-serif;text-decoration:none;cursor:pointer}.np-submit{background:#fff;color:#0b0b0c;margin-top:8px}.np-whatsapp{background:#1c1c1e;color:#fff;border:1px solid #343436;margin-top:9px}.np-contact .form-msg{font-size:12px;margin-top:10px;color:#d6c49e}
+#map .ymaps-2-1-79-map,#map .ymaps-2-1-79-inner-panes{border-radius:22px!important;overflow:hidden!important}
 @media(max-width:900px){.hero-copy h1{font-size:clamp(40px,10vw,58px)!important;max-width:620px!important}.np-gallery{grid-template-columns:1fr;min-height:auto}.np-main{min-height:52vh}.np-thumbs{grid-template-columns:repeat(4,1fr);grid-template-rows:none}.np-thumb{aspect-ratio:1.25}.np-thumb:nth-child(n+5){display:none}.np-shell{grid-template-columns:1fr;padding:38px 22px 54px;gap:32px}.np-content>h1{font-size:clamp(35px,9vw,50px)}.np-specs{grid-template-columns:repeat(2,1fr)}.np-contact-inner{position:relative;top:auto}.np-description{font-size:16px;line-height:1.7}}
 @media(max-width:760px){.brand-logo img,.footer-logo img{width:128px!important;max-width:128px!important}.hero-copy h1{font-size:clamp(38px,10.4vw,52px)!important;line-height:1.01!important;letter-spacing:-.035em!important}.np-main{min-height:46vh}.np-shell{padding:32px 18px 48px}.np-specs{grid-template-columns:1fr 1fr}.np-gallery{padding:8px}.np-thumbs{gap:7px}}
 `;
 document.head.appendChild(style);
 addCinematicTone();
+loadPublicConfig();
 polish();setTimeout(polish,120);setTimeout(polish,500);
 document.querySelectorAll('.langs button').forEach(b=>b.addEventListener('click',()=>setTimeout(polish,60)));
 const bodyObserver=new MutationObserver(()=>requestAnimationFrame(cleanBrand));bodyObserver.observe(document.body,{childList:true,subtree:true});
