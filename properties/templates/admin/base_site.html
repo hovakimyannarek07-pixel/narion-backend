@@ -9,13 +9,13 @@
 {% endblock %}
 
 {% block branding %}
-<div class="narion-brand">
-  <img class="narion-brand-logo" src="https://narion.am/narion-logo.png" alt="Narion">
+<a class="narion-brand" href="{% url 'admin:index' %}" aria-label="Narion Manager">
+  <span class="narion-brand-mark-wrap"><img class="narion-brand-mark" src="{% static 'admin/narion-mark.svg' %}" alt="Narion"></span>
   <div class="narion-manager-copy">
-    <div class="narion-brand-name">Manager</div>
+    <div class="narion-brand-name">Narion Manager</div>
     <div class="narion-brand-sub">PROPERTY OPERATIONS</div>
   </div>
-</div>
+</a>
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
