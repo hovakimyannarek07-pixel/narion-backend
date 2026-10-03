@@ -1,3 +1,8 @@
+import html
+import json
+import os
+from urllib import parse, request as urlrequest
+
 from django.contrib import admin
 from django.utils.html import format_html
 
@@ -5,6 +10,47 @@ from .models import (
     Region, City, District, Developer, Project, Agent,
     Property, PropertyImage, PropertyVideo, Favorite, Inquiry,
 )
+
+
+LANG_CODES = {"hy": "hy", "ru": "ru", "en": "en", "es": "es"}
+
+
+def _google_translate(text, source_lang, target_lang):
+    key = os.getenv("GOOGLE_TRANSLATE_API_KEY", "").strip()
+    if not key or not text or source_lang == target_lang:
+        return ""
+    endpoint = f"https://translation.googleapis.com/language/translate/v2?key={parse.quote(key)}"
+    payload = parse.urlencode({
+        "q": text,
+        "source": source_lang,
+        "target": target_lang,
+        "format": "text",
+    }).encode("utf-8")
+    req = urlrequest.Request(endpoint, data=payload, method="POST")
+    req.add_header("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
+    with urlrequest.urlopen(req, timeout=12) as response:
+        body = json.loads(response.read().decode("utf-8"))
+    translated = body.get("data", {}).get("translations", [{}])[0].get("translatedText", "")
+    return html.unescape(translated).strip()
+
+
+def _fill_missing_language_group(obj, prefix):
+    source_lang = None
+    source_text = ""
+    for code in ("hy", "ru", "en", "es"):
+        value = (getattr(obj, f"{prefix}_{code}", "") or "").strip()
+        if value:
+            source_lang, source_text = code, value
+            break
+    if not source_text:
+        return
+    for code in ("hy", "ru", "en", "es"):
+        field = f"{prefix}_{code}"
+        if (getattr(obj, field, "") or "").strip():
+            continue
+        translated = _google_translate(source_text, LANG_CODES[source_lang], LANG_CODES[code])
+        if translated:
+            setattr(obj, field, translated)
 
 
 class PropertyImageInline(admin.TabularInline):
@@ -82,11 +128,11 @@ class PropertyAdmin(admin.ModelAdmin):
     fieldsets = (
         ("01 · Main information", {
             "fields": (("title_hy", "title_ru"), ("title_en", "title_es")),
-            "description": "Short, clear property title in each language you use on Narion.",
+            "description": "Write the title in one language. When Google Translation is connected, Narion can fill the empty languages automatically on save.",
         }),
         ("02 · Selling description", {
             "fields": (("description_hy", "description_ru"), ("description_en", "description_es")),
-            "description": "Write concise, benefit-led copy. The property portal will use this text.",
+            "description": "Keep it short and benefit-led. Empty translations can be generated automatically when translation is enabled.",
         }),
         ("03 · Status & classification", {
             "fields": (("listing_type", "market_type", "property_type"), ("is_published", "is_featured")),
@@ -107,6 +153,15 @@ class PropertyAdmin(admin.ModelAdmin):
             "fields": ("developer", "project", "agent"),
         }),
     )
+
+    def save_model(self, request, obj, form, change):
+        if os.getenv("AUTO_TRANSLATE_PROPERTIES", "True").lower() in {"1", "true", "yes"} and os.getenv("GOOGLE_TRANSLATE_API_KEY"):
+            try:
+                _fill_missing_language_group(obj, "title")
+                _fill_missing_language_group(obj, "description")
+            except Exception:
+                pass
+        super().save_model(request, obj, form, change)
 
     @admin.display(description="Cover")
     def cover_thumb(self, obj):
@@ -171,7 +226,7 @@ class InquiryAdmin(admin.ModelAdmin):
 
 admin.site.register(Favorite)
 
-admin.site.site_header = "Narion Control"
-admin.site.site_title = "Narion Control"
+admin.site.site_header = "Narion Manager"
+admin.site.site_title = "Narion Manager"
 admin.site.index_title = "Property operations"
 admin.site.site_url = "https://narion.am"
