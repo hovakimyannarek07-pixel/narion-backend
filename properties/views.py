@@ -38,8 +38,12 @@ class PublicConfigView(APIView):
 
     def get(self, request):
         whatsapp = "".join(ch for ch in os.getenv("WHATSAPP_NUMBER", "") if ch.isdigit())
+        phone_raw = os.getenv("PHONE_NUMBER", "").strip()
+        phone_digits = "".join(ch for ch in phone_raw if ch.isdigit())
+        phone = f"+{phone_digits}" if phone_digits else ""
         return Response({
             "whatsapp_number": whatsapp,
+            "phone_number": phone,
             "yandex_maps_api_key": os.getenv("YANDEX_MAPS_API_KEY", "").strip(),
         })
 
