@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -29,6 +31,17 @@ def _user_payload(user):
         "name": user.first_name or "",
         "is_staff": user.is_staff,
     }
+
+
+class PublicConfigView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        whatsapp = "".join(ch for ch in os.getenv("WHATSAPP_NUMBER", "") if ch.isdigit())
+        return Response({
+            "whatsapp_number": whatsapp,
+            "yandex_maps_api_key": os.getenv("YANDEX_MAPS_API_KEY", "").strip(),
+        })
 
 
 class RegisterView(APIView):
