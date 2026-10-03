@@ -1,7 +1,7 @@
 {% extends "admin/base.html" %}
 {% load static %}
 
-{% block title %}{{ title }} | Narion Control{% endblock %}
+{% block title %}{{ title }} | Narion Manager{% endblock %}
 
 {% block extrastyle %}
 {{ block.super }}
@@ -9,13 +9,13 @@
 {% endblock %}
 
 {% block branding %}
-<div class="narion-brand">
-  <div class="narion-brand-mark">N</div>
-  <div>
-    <div class="narion-brand-name">Narion Control</div>
-    <div class="narion-brand-sub">REAL ESTATE OPERATIONS</div>
+<a class="narion-brand" href="{% url 'admin:index' %}" aria-label="Narion Manager">
+  <span class="narion-brand-mark-wrap"><img class="narion-brand-mark" src="{% static 'admin/narion-mark.svg' %}" alt="Narion"></span>
+  <div class="narion-manager-copy">
+    <div class="narion-brand-name">Narion Manager</div>
+    <div class="narion-brand-sub">PROPERTY OPERATIONS</div>
   </div>
-</div>
+</a>
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
