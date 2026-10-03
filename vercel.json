@@ -8,6 +8,7 @@
     { "src": "wow.js", "use": "@vercel/static" },
     { "src": "hy-fix.js", "use": "@vercel/static" },
     { "src": "catalog-polish.js", "use": "@vercel/static" },
+    { "src": "contact-polish.js", "use": "@vercel/static" },
     { "src": "narion-logo.png", "use": "@vercel/static" }
   ],
   "routes": [
@@ -16,6 +17,7 @@
     { "src": "/wow.js", "dest": "/wow.js", "headers": { "Cache-Control": "no-store, max-age=0" } },
     { "src": "/hy-fix.js", "dest": "/hy-fix.js", "headers": { "Cache-Control": "no-store, max-age=0" } },
     { "src": "/catalog-polish.js", "dest": "/catalog-polish.js", "headers": { "Cache-Control": "no-store, max-age=0" } },
+    { "src": "/contact-polish.js", "dest": "/contact-polish.js", "headers": { "Cache-Control": "no-store, max-age=0" } },
     { "src": "/narion-logo.png", "dest": "/narion-logo.png", "headers": { "Cache-Control": "public, max-age=86400" } },
     { "src": "/", "dest": "/index.html", "headers": { "Cache-Control": "no-store, max-age=0" } },
     { "src": "/.*", "dest": "/index.html", "headers": { "Cache-Control": "no-store, max-age=0" } }
