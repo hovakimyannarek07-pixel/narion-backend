@@ -39,7 +39,8 @@ function enhance(){
   a.className='narion-wa-action';
   a.target='_blank';a.rel='noopener';
   a.href='https://wa.me/'+cfg.whatsapp_number+'?text='+encodeURIComponent(title);
-  a.innerHTML='<span>◉</span><b>'+wa+'</b>';
+  const shown=cfg.whatsapp_number==='37499606644'?'+374 99 606 644':('+'+cfg.whatsapp_number);
+  a.innerHTML='<span>◉</span><b>'+wa+'</b><small>'+shown+'</small>';
   wrap.appendChild(a);
  }
  if(wrap.children.length)form.appendChild(wrap);
