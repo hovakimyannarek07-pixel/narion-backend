@@ -144,11 +144,11 @@ async function setupYandexMap(key){
   try{if(map&&typeof map.remove==='function')map.remove()}catch{}
   const host=document.getElementById('map');
   host.innerHTML='';
-  const ymap=new ymaps.Map('map',{center:[40.1772,44.5035],zoom:12,type:'yandex#hybrid',controls:['zoomControl','geolocationControl']},{suppressMapOpenBlock:true});
+  const ymap=new ymaps.Map('map',{center:[40.1772,44.5035],zoom:11,type:'yandex#hybrid',controls:['zoomControl','geolocationControl']},{suppressMapOpenBlock:true});
   window.narionYandexMap=ymap;
   const response=await fetch(`${API}/api/properties/map/?_=${Date.now()}`,{cache:'no-store'});
   const points=await response.json();
-  const svg=`data:image/svg+xml;charset=UTF-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" fill="#0b0b0c" stroke="#c5a56a" stroke-width="2"/><circle cx="14" cy="14" r="3.5" fill="#ffffff"/></svg>')}`;
+  const svg=`data:image/svg+xml;charset=UTF-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="42" height="52" viewBox="0 0 42 52"><defs><filter id="s" x="-30%" y="-20%" width="160%" height="160%"><feDropShadow dx="0" dy="3" stdDeviation="2.3" flood-color="#000" flood-opacity=".32"/></filter></defs><path filter="url(#s)" d="M21 1C10.5 1 2 9.4 2 19.8C2 34.3 21 50 21 50s19-15.7 19-30.2C40 9.4 31.5 1 21 1Z" fill="#050505" stroke="#fff" stroke-width="2"/><circle cx="21" cy="20" r="12.5" fill="#fff"/><g transform="translate(13 12) scale(.05)"><polygon points="39,57 316,338 316,56" fill="#000"/><polygon points="22,121 22,359 259,359" fill="#000"/></g></svg>')}`;
   (Array.isArray(points)?points:[]).forEach(p=>{
    const lat=Number(p.latitude),lng=Number(p.longitude);
    if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
@@ -156,11 +156,10 @@ async function setupYandexMap(key){
     balloonContentHeader:esc(titleOf(p)),
     balloonContentBody:`<div style="font:500 13px Inter,sans-serif"><b>${esc(money(p))}</b><br><button onclick="openProperty(${Number(p.id)})" style="margin-top:10px;border:0;border-radius:999px;padding:8px 12px;background:#0b0b0c;color:#fff;cursor:pointer">${esc(tr('view'))}</button></div>`,
     hintContent:esc(titleOf(p))
-   },{iconLayout:'default#image',iconImageHref:svg,iconImageSize:[28,28],iconImageOffset:[-14,-14]});
+   },{iconLayout:'default#image',iconImageHref:svg,iconImageSize:[42,52],iconImageOffset:[-21,-50]});
    ymap.geoObjects.add(marker);
   });
-  const bounds=ymap.geoObjects.getBounds();
-  if(bounds)ymap.setBounds(bounds,{checkZoomRange:true,zoomMargin:70});
+  // Keep the initial city-wide view. Visitors can zoom in themselves to inspect streets and nearby infrastructure.
  }catch(err){console.warn('Narion Yandex map unavailable',err)}
 }
 
